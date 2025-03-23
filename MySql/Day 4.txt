@@ -1,0 +1,609 @@
+﻿Assignment – 4
+--------------------------------------------------------------------------------------------------------------------------------------
+Query for Table:
+Create Table cust_vehicle
+(
+ tid int auto_increment,
+ custid int,
+ vid int,
+ sid int,
+ buy_price int Check(buy_price > 0) Not NULL,
+ Constraint pk_cust_veh Primary Key(tid),
+ Constraint fk_cust Foreign Key(custid) References customer(custid),
+ Constraint fk_veh Foreign Key(vid) References vehicle(vid),
+ Constraint fk_sale Foreign Key(sid) References salesman(sid)
+);
+Output:
++-----------+------+------+-----+---------+----------------+
+| Field     | Type | Null | Key | Default | Extra          |
++-----------+------+------+-----+---------+----------------+
+| tid       | int  | NO   | PRI | NULL    | auto_increment |
+| custid    | int  | YES  | MUL | NULL    |                |
+| vid       | int  | YES  | MUL | NULL    |                |
+| sid       | int  | YES  | MUL | NULL    |                |
+| buy_price | int  | NO   |     | NULL    |                |
++-----------+------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+Insert Into cust_vehicle(custid, vid, sid, buy_price)
+Values(1, 1, 10, 75000),
+      (1, 2, 10, 79000),
+	  (2, 3, 11, 80000),
+	  (3, 3, 11, 75000),
+	  (3, 2, 10, 800000);
+	  
+Output:
++-----+--------+------+------+-----------+
+| tid | custid | vid  | sid  | buy_price |
++-----+--------+------+------+-----------+
+|   1 |      1 |    1 |   10 |     75000 |
+|   2 |      1 |    2 |   10 |     79000 |
+|   3 |      2 |    3 |   11 |     80000 |
+|   4 |      3 |    3 |   11 |     75000 |
+|   5 |      3 |    2 |   10 |    800000 |
++-----+--------+------+------+-----------+
+5 rows in set (0.00 sec)
+
+---------------------------------------------------------------
+
+1. Display tid,custid,customer name and buy_price.
+
+Query: Select * From cust_vehicle;
+
+Output:
++-----+--------+------+------+-----------+
+| tid | custid | vid  | sid  | buy_price |
++-----+--------+------+------+-----------+
+|   1 |      1 |    1 |   10 |     75000 |
+|   2 |      1 |    2 |   10 |     79000 |
+|   3 |      2 |    3 |   11 |     80000 |
+|   4 |      3 |    3 |   11 |     75000 |
+|   5 |      3 |    2 |   10 |    800000 |
++-----+--------+------+------+-----------+
+5 rows in set (0.00 sec)
+-------------------------------------------------------------------
+
+2.Dispaly tid,custid,customer name,vid,vehicle name, sid, salesmen name and buy_price for vehicle.
+
+Query:
+Select t.tid,t.custid,c.cname,t.vid,v.vname,t.sid,s.sname,t.buy_price
+From customer c,vehicle v,salesman s,cust_vehicle t
+Where t.custid = c.custid and t.vid = v.vid and t.sid = s.sid;
+
+Output:
++-----+--------+--------+------+--------+------+--------+-----------+
+| tid | custid | cname  | vid  | vname  | sid  | sname  | buy_price |
++-----+--------+--------+------+--------+------+--------+-----------+
+|   1 |      1 | Nilima |    1 | Activa |   10 | Rajesh |     75000 |
+|   2 |      1 | Nilima |    2 | Santro |   10 | Rajesh |     79000 |
+|   3 |      2 | Ganesh |    3 | Yamaha |   11 | Seema  |     80000 |
+|   4 |      3 | Kishor |    3 | Yamaha |   11 | Seema  |     75000 |
+|   5 |      3 | Kishor |    2 | Santro |   10 | Rajesh |    800000 |
++-----+--------+--------+------+--------+------+--------+-----------+
+5 rows in set (0.00 sec)
+----------------------------------------------------------------------------------
+
+Consider emp, dept and salgrade tables to answer following queries.
+1.List details of employees as ename,deptno,dname,sal,comm.
+
+Query:
+Select e.ename, e.deptno, d.dname, e.sal, e.comm
+From emp e, dept d
+Where e.deptno = d.deptno;
+
+Output:
++--------+--------+------------+---------+---------+
+| ename  | deptno | dname      | sal     | comm    |
++--------+--------+------------+---------+---------+
+| CLARK  |     10 | ACCOUNTING | 2829.75 |    NULL |
+| KING   |     10 | ACCOUNTING | 5775.00 |    NULL |
+| MILLER |     10 | ACCOUNTING | 1501.50 |    NULL |
+| SMITH  |     20 | RESEARCH   |  924.00 |    NULL |
+| JONES  |     20 | RESEARCH   | 3436.13 |    NULL |
+| SCOTT  |     20 | RESEARCH   | 3465.00 |    NULL |
+| ADAMS  |     20 | RESEARCH   | 1270.50 |    NULL |
+| FORD   |     20 | RESEARCH   | 3465.00 |    NULL |
+| ALLEN  |     30 | SALES      | 1848.00 |  300.00 |
+| WARD   |     30 | SALES      | 1443.75 |  500.00 |
+| MARTIN |     30 | SALES      | 1443.75 | 1400.00 |
+| BLAKE  |     30 | SALES      | 3291.75 |    NULL |
+| TURNER |     30 | SALES      | 1732.50 |    0.00 |
+| JAMES  |     30 | SALES      | 1097.25 |    NULL |
++--------+--------+------------+---------+---------+
+14 rows in set (0.00 sec)
+
+----------------------------------------------------------------------------
+ 
+2. Display details of employees as empno,ename,sal,job, deptno and dept name for all employees working as a clerk or salesman and earning  more than 2000 .
+Query:
+Select empno,ename,sal,job,e.deptno,dname 
+From  emp e,dept d
+Where e.deptno = d.deptno
+And job In('CLERK', 'SALESMAN')
+And sal > 2000;
+
+Output:
+Empty set (0.00 sec)
+
+-------------------------------------------------------------------------------------
+3. List details of employees as ename,deptno,dname,sal,comm working in dept 20 and 30 who did not get any commission.
+
+Query:
+Select e.ename, e.deptno, d.dname, e.sal, e.comm
+From emp e, dept d
+Where e.deptno = d.deptno
+And e.deptno In(20, 30)
+And e.comm Is NULL;
+
+Output:
++-------+--------+----------+---------+------+
+| ename | deptno | dname    | sal     | comm |
++-------+--------+----------+---------+------+
+| SMITH |     20 | RESEARCH |  924.00 | NULL |
+| JONES |     20 | RESEARCH | 3436.13 | NULL |
+| BLAKE |     30 | SALES    | 3291.75 | NULL |
+| SCOTT |     20 | RESEARCH | 3465.00 | NULL |
+| ADAMS |     20 | RESEARCH | 1270.50 | NULL |
+| JAMES |     30 | SALES    | 1097.25 | NULL |
+| FORD  |     20 | RESEARCH | 3465.00 | NULL |
++-------+--------+----------+---------+------+
+7 rows in set (0.00 sec)
+
+-------------------------------------------------------------------------------------
+   
+4. Display ename,sal and grade of employee(use salgrade table). 
+
+Query:
+Select ename,sal,grade
+From emp , salgrade 
+Where sal between losal and hisal;
+
+Output:
++--------+---------+-------+
+| ename  | sal     | grade |
++--------+---------+-------+
+| SMITH  |  924.00 |     1 |
+| ALLEN  | 1848.00 |     3 |
+| WARD   | 1443.75 |     3 |
+| JONES  | 3436.13 |     5 |
+| MARTIN | 1443.75 |     3 |
+| BLAKE  | 3291.75 |     5 |
+| CLARK  | 2829.75 |     4 |
+| SCOTT  | 3465.00 |     5 |
+| KING   | 5775.00 |     5 |
+| TURNER | 1732.50 |     3 |
+| ADAMS  | 1270.50 |     2 |
+| JAMES  | 1097.25 |     1 |
+| FORD   | 3465.00 |     5 |
+| MILLER | 1501.50 |     3 |
++--------+---------+-------+
+14 rows in set (0.00 sec)
+
+------------------------------------------------------------
+
+5. Display the information of department i.e deptno, dname and loc in which clerks are working. 
+
+Query:
+Select d.deptno, dname, loc
+From dept d, emp e
+Where d.deptno = e.deptno
+And job = 'CLERK';
+
+Output:
++--------+------------+----------+
+| deptno | dname      | loc      |
++--------+------------+----------+
+|     20 | RESEARCH   | DALLAS   |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     10 | ACCOUNTING | NEW YORK |
++--------+------------+----------+
+4 rows in set (0.00 sec)
+
+---------------------------------------------------------------
+
+6. Try out all set operators as per the demo
+
+Query UNION:
+Select id,city
+From t1
+union
+Select id,city
+From  t2;
+
+Output:
++------+----------+
+| id   | city     |
++------+----------+
+|    1 | pune     |
+|    2 | nagpur   |
+|    3 | delhi    |
+|    4 | shimla   |
+|    5 | hydrabad |
+|   10 | pune     |
+|   20 | udaypur  |
+|    5 | ranchi   |
++------+----------+
+8 rows in set (0.00 sec)
+
+Query:
+Select id, city
+From t1
+Union All
+Select id, city
+From t2;
+
+Output:
++------+----------+
+| id   | city     |
++------+----------+
+|    1 | pune     |
+|    2 | nagpur   |
+|    3 | delhi    |
+|    4 | shimla   |
+|    5 | hydrabad |
+|   10 | pune     |
+|   20 | udaypur  |
+|    3 | delhi    |
+|    4 | shimla   |
+|    5 | ranchi   |
++------+----------+
+10 rows in set (0.00 sec)
+
+Query INTERSECT:
+Select id, city
+From t1
+Intersect
+Select id, city
+From t2;
+
+Output:
++------+--------+
+| id   | city   |
++------+--------+
+|    3 | delhi  |
+|    4 | shimla |
++------+--------+
+2 rows in set (0.00 sec)
+
+Query EXCEPT:
+Select id, city
+From t1
+Except
+Select id, city
+From t2;
+
+Output:
++------+----------+
+| id   | city     |
++------+----------+
+|    1 | pune     |
+|    2 | nagpur   |
+|    5 | hydrabad |
++------+----------+
+3 rows in set (0.00 sec)
+
+-------------------------------------------------
+ 
+7. Try out on delete set null/ cascade
+    On update set null/cascade
+
+On Delete NULL :-	
+Query Create:
+Create Table employee1
+(
+ eno int Auto_increment,
+ ename varchar(15),
+ deptno int,
+ Constraint pk_eno Primary Key(eno),
+ Constraint fk_deptno Foreign Key(deptno)
+ References dept1(deptno)
+ On Delete Set NULL
+);
+
+Output:
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| eno    | int         | NO   | PRI | NULL    | auto_increment |
+| ename  | varchar(15) | YES  |     | NULL    |                |
+| deptno | int         | YES  | MUL | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+Query Insert:
+insert into employee1(ename,deptno)
+values('Raj',10),('Yash',20),('Smita',30),('Geeta',10),
+('Ramesh',10),('Seema',20),('Neha',30);
+
+Output:
++-----+--------+--------+
+| eno | ename  | deptno |
++-----+--------+--------+
+|   1 | Raj    |     10 |
+|   2 | Yash   |     20 |
+|   3 | Smita  |     30 |
+|   4 | Geeta  |     10 |
+|   5 | Ramesh |     10 |
+|   6 | Seema  |     20 |
+|   7 | Neha   |     30 |
++-----+--------+--------+
+7 rows in set (0.00 sec)
+
+Query Delete:
+delete from dept1
+where deptno=10;
+
+Output:
++--------+------------+---------+
+| DEPTNO | DNAME      | LOC     |
++--------+------------+---------+
+|     20 | RESEARCH   | DALLAS  |
+|     30 | SALES      | CHICAGO |
+|     40 | OPERATIONS | BOSTON  |
++--------+------------+---------+
+3 rows in set (0.00 sec)
++-----+--------+--------+
+| eno | ename  | deptno |
++-----+--------+--------+
+|   1 | Raj    |   NULL |
+|   2 | Yash   |     20 |
+|   3 | Smita  |     30 |
+|   4 | Geeta  |   NULL |
+|   5 | Ramesh |   NULL |
+|   6 | Seema  |     20 |
+|   7 | Neha   |     30 |
++-----+--------+--------+
+7 rows in set (0.00 sec)
+
+On Delete Cascade :-
+Query Create:
+Create Table employee1
+(
+ eno int Auto_increment,
+ ename varchar(15),
+ deptno int,
+ Constraint pk_eno Primary Key(eno),
+ Constraint fk_deptno Foreign Key(deptno)
+ References dept1(deptno)
+ On Delete Cascade
+);
+
+Output:
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| eno    | int         | NO   | PRI | NULL    | auto_increment |
+| ename  | varchar(15) | YES  |     | NULL    |                |
+| deptno | int         | YES  | MUL | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+Query Insert:
+insert into employee1(ename,deptno)
+values('Raj',10),('Yash',20),('Smita',30),('Geeta',10),
+('Ramesh',10),('Seema',20),('Neha',30);
+
+Output:
++-----+--------+--------+
+| eno | ename  | deptno |
++-----+--------+--------+
+|   1 | Raj    |     10 |
+|   2 | Yash   |     20 |
+|   3 | Smita  |     30 |
+|   4 | Geeta  |     10 |
+|   5 | Ramesh |     10 |
+|   6 | Seema  |     20 |
+|   7 | Neha   |     30 |
++-----+--------+--------+
+7 rows in set (0.00 sec)
+
+Query Delete:
+delete from dept1
+where deptno=10;
+
+Output:
++--------+------------+---------+
+| DEPTNO | DNAME      | LOC     |
++--------+------------+---------+
+|     20 | RESEARCH   | DALLAS  |
+|     30 | SALES      | CHICAGO |
+|     40 | OPERATIONS | BOSTON  |
++--------+------------+---------+
+3 rows in set (0.00 sec)
++-----+-------+--------+
+| eno | ename | deptno |
++-----+-------+--------+
+|   2 | Yash  |     20 |
+|   3 | Smita |     30 |
+|   6 | Seema |     20 |
+|   7 | Neha  |     30 |
++-----+-------+--------+
+4 rows in set (0.00 sec)
+
+On Update NULL :-
+Query Create:
+Create Table employee1
+(
+ eno int Auto_increment,
+ ename varchar(15),
+ deptno int,
+ Constraint pk_eno Primary Key(eno),
+ Constraint fk_deptno Foreign Key(deptno)
+ References dept1(deptno)
+ On Update  SET NULL
+);
+
+Output:
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| eno    | int         | NO   | PRI | NULL    | auto_increment |
+| ename  | varchar(15) | YES  |     | NULL    |                |
+| deptno | int         | YES  | MUL | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+Query:
+insert into employee1(ename,deptno)
+values('Raj',10),('Yash',20),('Smita',30),('Geeta',10),
+('Ramesh',10),('Seema',20),('Neha',30);
+
+
+Output:
++-----+--------+--------+
+| eno | ename  | deptno |
++-----+--------+--------+
+|   1 | Raj    |     10 |
+|   2 | Yash   |     20 |
+|   3 | Smita  |     30 |
+|   4 | Geeta  |     10 |
+|   5 | Ramesh |     10 |
+|   6 | Seema  |     20 |
+|   7 | Neha   |     30 |
++-----+--------+--------+
+7 rows in set (0.00 sec)
+
+Update dept1 set deptno = 80 
+Where dname  = "ACCOUNTING";
+
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
+|     80 | ACCOUNTING | NEW YORK |
++--------+------------+----------+
+4 rows in set (0.00 sec)
+
++-----+--------+--------+
+| eno | ename  | deptno |
++-----+--------+--------+
+|   1 | Raj    |   NULL |
+|   2 | Yash   |     20 |
+|   3 | Smita  |     30 |
+|   4 | Geeta  |   NULL |
+|   5 | Ramesh |   NULL |
+|   6 | Seema  |     20 |
+|   7 | Neha   |     30 |
++-----+--------+--------+
+7 rows in set (0.00 sec)
+
+Update on Cascade:
+
+Create Table employee1
+(
+ eno int Auto_increment,
+ ename varchar(15),
+ deptno int,
+ Constraint pk_eno Primary Key(eno),
+ Constraint fk_deptno Foreign Key(deptno)
+ References dept1(deptno)
+ On Update Cascade
+);
+
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| eno    | int         | NO   | PRI | NULL    | auto_increment |
+| ename  | varchar(15) | YES  |     | NULL    |                |
+| deptno | int         | YES  | MUL | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+insert into employee1(ename,deptno)
+values('Raj',10),('Yash',20),('Smita',30),('Geeta',10),
+('Ramesh',10),('Seema',20),('Neha',30);
+
++-----+--------+--------+
+| eno | ename  | deptno |
++-----+--------+--------+
+|   8 | Raj    |     10 |
+|   9 | Yash   |     20 |
+|  10 | Smita  |     30 |
+|  11 | Geeta  |     10 |
+|  12 | Ramesh |     10 |
+|  13 | Seema  |     20 |
+|  14 | Neha   |     30 |
++-----+--------+--------+
+7 rows in set (0.00 sec)
+
+Update dept1 set deptno = 100
+Where deptno = 30;
+
++--------+------------+----------+
+| DEPTNO | DNAME      | LOC      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     40 | OPERATIONS | BOSTON   |
+|    100 | SALES      | CHICAGO  |
++--------+------------+----------+
+4 rows in set (0.00 sec)
+
++-----+--------+--------+
+| eno | ename  | deptno |
++-----+--------+--------+
+|   8 | Raj    |     10 |
+|   9 | Yash   |     20 |
+|  10 | Smita  |    100 |
+|  11 | Geeta  |     10 |
+|  12 | Ramesh |     10 |
+|  13 | Seema  |     20 |
+|  14 | Neha   |    100 |
++-----+--------+--------+
+7 rows in set (0.00 sec)
+
+------------------------------------------------------------------------------
+
+8. Try all the constraints
+
+Query Create:
+Create Table employee1
+(
+ eno int Auto_increment,
+ ename varchar(15) Not NULL default 'Pagal',
+ mobile bigint Unique Check(mobile > 999999999),
+ deptno int,
+ Constraint pk_eno Primary Key(eno),
+ Constraint fk_deptno Foreign Key(deptno)
+ References dept1(deptno)
+ On Update Cascade
+);
+
+Output:
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| eno    | int         | NO   | PRI | NULL    | auto_increment |
+| ename  | varchar(15) | NO   |     | Pagal   |                |
+| mobile | bigint      | YES  | UNI | NULL    |                |
+| deptno | int         | YES  | MUL | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+Query Insert:
+Insert Into employee1(ename, mobile, deptno)
+Values('Raj', 7676767676, 10),
+      ('Yash', 1111111111, 20),
+	  ('Smita', 2222222222, 30),
+	  ('Geeta', 3443344334, 10),
+      ('Ramesh', 3333333333, 10),
+	  ('Seema', 4444444444, 20),
+	  ('Neha', 2532452312, 30);
+	  
+Output:
++-----+--------+------------+--------+
+| eno | ename  | mobile     | deptno |
++-----+--------+------------+--------+
+|   1 | Raj    | 7676767676 |     10 |
+|   2 | Yash   | 1111111111 |     20 |
+|   3 | Smita  | 2222222222 |     30 |
+|   4 | Geeta  | 3443344334 |     10 |
+|   5 | Ramesh | 3333333333 |     10 |
+|   6 | Seema  | 4444444444 |     20 |
+|   7 | Neha   | 2532452312 |     30 |
++-----+--------+------------+--------+
+7 rows in set (0.00 sec)
+----------------------------------------------------------------------
